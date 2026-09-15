@@ -55,7 +55,7 @@ class DonorService extends Service
     public function destroyDonor(Donor $donor): Result
     {
         if ($donor->screenings()->exists()) {
-            return Result::failure('Não é possível excluir um doador que possui coletas cadastradas.');
+            return Result::failure('Não é possível excluir um doador que possui triagens realizadas.');
         }
 
         try {
