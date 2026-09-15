@@ -72,6 +72,9 @@ export default function Index({ donors, filters = {} }: IndexProps) {
                                                 <Button variant="outline" size="sm" asChild>
                                                     <Link href={`/donors/${donor.id}/edit`}>Editar</Link>
                                                 </Button>
+                                                <Button className="cursor-pointer" variant="destructive" size="sm" asChild>
+                                                    <Link href={`/donors/${donor.id}`} method="delete" as="button">Excluir</Link>
+                                                </Button>
                                             </td>
                                         </tr>
                                     ))
