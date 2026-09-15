@@ -5,35 +5,55 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import InputError from '@/components/input-error';
 
-export default function Create() {
-    const { data, setData, post, processing, errors } = useForm({
-        name: '',
-        birth_date: '',
-        gender: '',
-        weight: '',
-        document_type: '',
-        document_number: '',
-        first_donation_date: '',
+interface Donor {
+    id: number;
+    name: string;
+    birth_date: string;
+    gender: string;
+    weight: number;
+    document_type: string;
+    document_number: string;
+    first_donation_date?: string | null;
+}
+
+interface EditProps {
+    donor: Donor;
+}
+
+export default function Edit({ donor }: EditProps) {
+    const formatDateForInput = (dateString?: string | null) => {
+        if (!dateString) return '';
+        return dateString.split('T')[0];
+    };
+
+    const { data, setData, put, processing, errors } = useForm({
+        name: donor.name || '',
+        birth_date: formatDateForInput(donor.birth_date),
+        gender: donor.gender || '',
+        weight: donor.weight ? String(donor.weight) : '',
+        document_type: donor.document_type || '',
+        document_number: donor.document_number || '',
+        first_donation_date: formatDateForInput(donor.first_donation_date),
     });
 
     function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
         e.preventDefault();
 
-        post('/donors', {
+        put(`/donors/${donor.id}`, {
             preserveScroll: true,
         });
     }
 
     return (
         <>
-            <Head title="Novo Doador" />
+            <Head title={`Editar Doador: ${donor.name}`} />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-6">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-2xl font-semibold tracking-tight">Cadastrar Doador</h1>
+                        <h1 className="text-2xl font-semibold tracking-tight">Editar Doador</h1>
                         <p className="text-sm text-muted-foreground">
-                            Preencha as informações básicas do novo doador.
+                            Atualize as informações do doador {donor.name}.
                         </p>
                     </div>
                 </div>
@@ -61,7 +81,6 @@ export default function Create() {
                                         <SelectValue placeholder="Selecione..." />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="">Selecione...</SelectItem>
                                         <SelectItem value="RG">RG</SelectItem>
                                         <SelectItem value="CNH">CNH</SelectItem>
                                         <SelectItem value="CTPS">CTPS</SelectItem>
@@ -136,7 +155,7 @@ export default function Create() {
 
                         <div className="flex items-center gap-4 pt-4">
                             <Button className="cursor-pointer" type="submit" disabled={processing}>
-                                Cadastrar Doador
+                                Atualizar Doador
                             </Button>
                             <Button variant="outline" type="button" asChild>
                                 <Link href="/donors">Cancelar</Link>
@@ -149,7 +168,7 @@ export default function Create() {
     );
 }
 
-Create.layout = {
+Edit.layout = {
     breadcrumbs: [
         {
             title: 'Dashboard',
@@ -160,8 +179,8 @@ Create.layout = {
             href: '/donors',
         },
         {
-            title: 'Cadastrar Doador',
-            href: '/donors/create',
+            title: 'Editar Doador',
+            href: '#',
         },
     ],
 };

@@ -35,6 +35,12 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        if ($request->session()->has('success')) {
+            \Inertia\Inertia::flash('toast', ['type' => 'success', 'message' => $request->session()->get('success')]);
+        } elseif ($request->session()->has('error')) {
+            \Inertia\Inertia::flash('toast', ['type' => 'error', 'message' => $request->session()->get('error')]);
+        }
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),

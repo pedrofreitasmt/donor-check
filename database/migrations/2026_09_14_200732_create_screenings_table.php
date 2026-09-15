@@ -33,6 +33,10 @@ return new class extends Migration
             $table->string('delivery_type')->nullable(); // normal ou cesariana
             $table->boolean('is_breastfeeding')->default(false); // Amamentação
             
+            // Resultado da Triagem
+            $table->boolean('is_apt')->default(false);
+            $table->json('rejection_reasons')->nullable();
+
             $table->timestamps();
         });
     }
